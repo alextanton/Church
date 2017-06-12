@@ -1,0 +1,110 @@
+<!-- Page Content -->
+<section id="works" class="section-padding wow fadeInUp delay-05s">
+<div class="container">
+
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="row">
+            {{#each test}}
+            <!-- First Blog Post -->
+            <br>
+            <h2>
+                <a href="#">{{title}}</a>
+            </h2>
+            <p class="lead">
+                by <a href="index.php">{{auther}}</a>
+            </p>
+            <p><span class="glyphicon glyphicon-time"></span>{{posted}}</p>
+            <hr>
+            <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+            <hr>
+            <p style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{post}}</p>
+            <a class="btn btn-primary" href="/blogs/{{_id}}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+            <p style="visibility: hidden;">{{_id}}</p>
+            <hr>
+            {{/each}}
+            <!-- Pager -->
+            <ul class="pager">
+                <li class="previous">
+                    <a href="#">&larr; Older</a>
+                </li>
+                <li class="next">
+                    <a href="#">Newer &rarr;</a>
+                </li>
+            </ul>
+
+        </div>
+        {{test.title}}
+
+    <!--
+        <div class="col-md-4">
+            <div class="well">
+                <h4>Blog Search</h4>
+                <div class="input-group">
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="well">
+                <h4>Blog Categories</h4>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                            <li><a href="#">Category Name</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            -->
+
+            <!-- Side Widget Well -->
+            <!--
+            <div class="well">
+                <h4>Side Widget Well</h4>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+            </div>
+            -->
+
+        <!--</div>-->
+
+    </div>
+    <!-- /.row -->
+
+    <hr>
+
+</div>
+</section>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.easing.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/wow.js"></script>
+<script src="js/jquery.bxslider.min.js"></script>
+<script src="js/custom.js"></script>
+<script src="contactform/contactform.js"></script>
