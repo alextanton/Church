@@ -1,6 +1,6 @@
     <!---->
     <section id="contact" class="section-padding wow fadeInUp delay-05s">
-      <div class="container">
+      <div id="foot" class="container">
         <div class="row">
           <div class="col-md-12 text-center white">
             <h2 class="service-title pad-bt15">Keep in touch with us</h2>
@@ -16,10 +16,12 @@
           </div>
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="contact-form">
-                <div id="sendmessage">Your message has been sent. Thank you!</div>
+                {{#if contact}}
+                <div style="visibility: visible;" id="sendmessage">Your message has been sent. Thank you!</div>
+                {{/if}}
                 <div id="errormessage"></div>
-                <form action="" method="post" role="form" class="contactForm">
-                    <div class="col-md-6 padding-right-zero">
+                <form action="/contact" method="post" role="form" class="contactForm">
+                    <div id="cont" class="col-md-6 padding-right-zero">
                         <div class="form-group">
                             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
                             <div class="validation"></div>
@@ -57,10 +59,23 @@
       <div class="container">
         <div class="row text-center">
           <p>&copy; Charleston Church of Christ. All Rights Reserved.</p>
-<!--           <div class="credits">
-            Designed  by <a href="https://bootstrapmade.com/">Bootstrap Themes</a>
-        </div> -->
+
         </div>
       </div>
     </footer>
     <!---->
+
+<!-- <script type="text/javascript">
+  $(document).ready(function() {
+    $('#cont').on('submit', function(e){
+      e.preventDefault();
+
+      $.ajax({
+        url: '/contact',
+        type: 'POST',
+        dataType: 'html',
+
+      })
+    })
+  }
+</script> -->

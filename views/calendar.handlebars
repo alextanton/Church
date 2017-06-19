@@ -1,0 +1,40 @@
+
+<section id="works" class="section-padding wow fadeInUp delay-05s">
+	<div class="container">
+        <div class="row">
+        	<br>
+        	<br>
+			<div id='calendar'></div>
+		</div>
+	</div>
+</section>
+
+
+<link rel='stylesheet' href='css/fullcalendar.css' />
+<script src='js/moment.min.js'></script>
+<script src="js/jquery.min.js"></script>
+<script src='js/fullcalendar.js'></script>
+<script src="js/jquery.easing.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/wow.js"></script>
+<script src="js/jquery.bxslider.min.js"></script>
+<script src="js/custom.js"></script>
+<script src="contactform/contactform.js"></script>
+<script type='text/javascript' src='js/gcal.js'></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	    $('#calendar').fullCalendar({
+	        googleCalendarApiKey: 'AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0',
+        	eventSources: [{
+            	googleCalendarId: 'charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg@group.calendar.google.com'
+        	},
+        	{	
+        		googleCalendarId: 'charlestonchurchofchrist.org_6qc9u9b53b48eb34mm2h3vmf4k@group.calendar.google.com',
+        		className: 'teen',
+        		color: '#087f23'
+        	}
+        	]
+	    })
+	});
+</script>

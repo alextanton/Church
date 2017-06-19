@@ -713,6 +713,9 @@ Responsive media queries
 .padding-right-zero{
     padding-right: 15px !important;
 }
+  #portfolio .portfolio-item {
+    margin: 0 0 30px;
+  }
 }
 @media (min-width: 451px) and (max-width: 767px) {
     .service-item, .blog-sec, .wrap-item, .loction-info{
