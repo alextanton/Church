@@ -779,6 +779,7 @@ body{
 .portfolio-item figure h2{
     font-size: 18px;
 }
+
 .testimonial-item ul li blockquote {
     font-size: 14px;
     line-height: 22px;
@@ -789,4 +790,10 @@ body{
     line-height: 22px;
     text-align: center;
 }
+
+#blog{
+    margin-right: 3%;
+    margin-left: 3%;
+}
+
 }

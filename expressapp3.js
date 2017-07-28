@@ -50,6 +50,7 @@ MongoClient.connect(url, function(err, db) {
 
 	app.get('/blogs', function(req, res){
 	  var posts = db.collection('documents').find().toArray(function(err, documents){
+	  	console.log(documents[0].author);
 	 	res.render('blogs', {layout: 'blog.handlebars', test: documents});
 	  });
 	});
