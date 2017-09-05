@@ -14,5 +14,32 @@
 		{{>foot}}
 	</div>
 
+	<script src="https://apis.google.com/js/api.js"></script>
+	    <script>
+			var apiKey = 'AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0';
+			var clid = "97383161219-lefcc77e1gf4eh1qsbkflthtsul5rdqn.apps.googleusercontent.com";
+			var scopes = "https://www.googleapis.com/auth/calendar.readonly"
+			var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+			function initClient() {
+        		gapi.client.init({
+        			discoveryDocs: DISCOVERY_DOCS,
+	          		clientId: clid,
+	          		scope: scopes,
+	          		apiKey: apiKey
+	          	}).then(function(){
+	          		gapi.client.calendar.events.list({
+	          		  'calendarId' : "charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg@group.calendar.google.com",
+			          'timeMax': (new Date()).toISOString()
+			        }).then(function(response) {
+			        	console.log(JSON.parse(response.body));
+			        })
+			    });
+	          }
+
+	          gapi.load('client:auth2', initClient);
+	 	</script>    
+    </script>
+
 </body>
 </html>

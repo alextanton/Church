@@ -1,9 +1,10 @@
 var express = require("express");
 
 var MongoClient = require('mongodb').MongoClient
-var url = 'mongodb://localhost:27017/blogs';
+var url = 'mongodb://localhost:27017';
 var fs = require('fs');
 var https = require('https');
+var request = require('request');
 
 var app = express();
 app.disable('x-powered-by');
@@ -34,6 +35,9 @@ var insertBlog = function(db) {
 }
 
 MongoClient.connect(url, function(err, db) {
+	if(db == null){
+		console.log(err);
+	}
   console.log("Connected successfully to server");
 
 	app.use(express.static(__dirname + '/public'));
@@ -44,13 +48,15 @@ MongoClient.connect(url, function(err, db) {
 			} else {
 				var contact = false;
 			}
-			res.render('home', {top3: docs, contact: contact});
+			request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?timeMin=2017-07-03T10%3A00%3A00-07%3A00&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
+					console.log(JSON.parse(body))
+					res.render('home', {top3: docs, contact: contact, recent: body});
+			})
 		})
 	});
 
 	app.get('/blogs', function(req, res){
 	  var posts = db.collection('documents').find().toArray(function(err, documents){
-	  	console.log(documents[0].author);
 	 	res.render('blogs', {layout: 'blog.handlebars', test: documents});
 	  });
 	});
