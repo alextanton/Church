@@ -2,21 +2,22 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <h2 class="service-title pad-bt15">Our Recent Events</h2>
-            {{recent}}
+            <h2 class="service-title pad-bt15">Our Upcoming Events</h2>
             <!--<p class="sub-title pad-bt15">These are the events you just missed<br>Check the calendar to make you don't miss anymore</p>!-->
             <hr class="bottom-line">
           </div>
+          {{#each recent}}
           <div class="col-md-4 col-sm-6 col-xs-12 portfolio-item padding-right-zero mr-btn-15">
             <figure>
               <img src="img/port01.jpg" class="img-responsive">
               <figcaption>
-                  <h2>Thing</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost.</p>
+                  <h2>{{summary}}</h2>
+                  <p>{{recent.description}}</p>
               </figcaption>
             </figure>
           </div>
-          <div class="col-md-4 col-sm-6 col-xs-12 portfolio-item padding-right-zero mr-btn-15">
+          {{/each}}
+<!--           <div class="col-md-4 col-sm-6 col-xs-12 portfolio-item padding-right-zero mr-btn-15">
             <figure>
               <img src="img/port02.jpg" class="img-responsive">
               <figcaption>
@@ -60,7 +61,7 @@
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nost.</p>
               </figcaption>
             </figure>
-          </div>
+          </div> -->
           <a href="/calendar" class="read-more">See full calendar →</a>
         </div>
       </div>
@@ -69,7 +70,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
-            <h2 class="service-title pad-bt15">What Do We Stand For</h2>
+            <h2 class="service-title pad-bt15">What We Stand For</h2>
             <p class="sub-title pad-bt15">We make a daily effort to love God, love people, and spread the truth of Christ<br>These are the beliefs that drive us</p>
             <hr class="bottom-line">
           </div>

@@ -1,7 +1,7 @@
 var express = require("express");
 
 var MongoClient = require('mongodb').MongoClient
-var url = 'mongodb://localhost:27017';
+var url = 'mongodb://localhost:27017/blogs';
 var fs = require('fs');
 var https = require('https');
 var request = require('request');
@@ -41,19 +41,19 @@ MongoClient.connect(url, function(err, db) {
   console.log("Connected successfully to server");
 
 	app.use(express.static(__dirname + '/public'));
-	app.get('/', function(req, res){
-		db.collection('documents').find().sort({$natural:1}).limit(3).toArray(function(err, docs){
-			if(req.body.contact){
-				var contact = req.body.contact
-			} else {
-				var contact = false;
-			}
-			request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?timeMin=2017-07-03T10%3A00%3A00-07%3A00&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
-					console.log(JSON.parse(body))
-					res.render('home', {top3: docs, contact: contact, recent: body});
-			})
-		})
-	});
+ app.get('/', function(req, res){
+        db.collection('documents').find().sort({$natural:1}).limit(3).toArray(function(err, docs){
+                if(req.body.contact){
+                        var contact = req.body.contact
+                } else {
+                        var contact = false;
+                }
+                request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?timeMin=2017-07-03T10%3A00%3A00-07%3A00&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
+                                console.log(docs);
+                                res.render('home', {top3: docs, contact: contact, recent: body});
+                })
+        })
+});
 
 	app.get('/blogs', function(req, res){
 	  var posts = db.collection('documents').find().toArray(function(err, documents){
