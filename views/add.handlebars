@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+<br>
+<br>
+<section class="section-padding wow fadeInUp delay-05s">
+<div class="container">
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addBlog" aria-expanded="false" aria-controls="collapseExample">
+    Add Blog
+  </button>
+</p>
+<div class="collapse" id="addBlog">
+  <div class="card card-block">
+    <form id="addBlogForm">
+	  <div class="form-group">
+	    <label for="title">Title</label>
+	    <input type="text" class="form-control" id="title" placeholder="Title">
+	  </div>
+	  <div class="form-group">
+	    <label for="author">Author</label>
+	    <input type="text" class="form-control" id="author" placeholder="Author">
+	  </div>
+	  <div class="form-group">
+	    <label for="img">Image(Link or absolute)</label>
+	    <input type="text" class="form-control" id="img" placeholder="Image URL">
+	  </div>
+	  <div class="form-group">
+	    <label for="post">Blog Post</label>
+	    <textarea class="form-control" id="post" rows="5"></textarea>
+	  </div>
+	  <button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+  </div>
+</div>
+</div>
+</section>
+
+<style type="text/css">
+	.form-control{
+		color: black !important;
+	}
+</style>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery.easing.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/wow.js"></script>
+<script src="/js/jquery.bxslider.min.js"></script>
+<script src="/js/custom.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+        $('#addBlogForm').on('submit', function(e) {
+            e.preventDefault();
+            var title = $("#title").val();
+        	var author = $("#author").val();
+        	var post = $("#post").val();
+        	var img = $('#img').val();
+        	var obj = {title: title, author: author, post: post, img: img};
+            $.ajax({
+                url : "/admin/add",
+                type: "POST",
+                data: obj,
+                success: function (data) {
+                    $("#form_output").append(data);
+                },
+                error: function (jXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        });
+    });
+</script>

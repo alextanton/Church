@@ -513,6 +513,7 @@ Blog
 }
 .blog-info p, .blog-comment p
 {
+    align-content: left;
     color: #949494;
 }
 .blog-comment p:first-child {
@@ -527,6 +528,7 @@ Blog
     color: #949494;
 }
 .read-more {
+    align-self: left;
     color: #949494;
     margin-top: 15px;
     display: inline-block;
@@ -630,6 +632,10 @@ contact
 {
     color: #be9e21;
 }
+.blog-img-custom{
+    height: 270px;
+    width: 360px;
+}
 /***********************************
 ************************************
 contact
@@ -716,10 +722,18 @@ Responsive media queries
   #portfolio .portfolio-item {
     margin: 0 0 30px;
   }
+  .blog-img-custom{
+    height: auto;
+    width: auto;
+    }
 }
 @media (min-width: 451px) and (max-width: 767px) {
     .service-item, .blog-sec, .wrap-item, .loction-info{
     margin-bottom: 15px;
+}
+.blog-img-custom{
+    height: auto;
+    width: auto;
 }
 }
 @media (min-width: 20px) and (max-width: 450px) {
@@ -727,6 +741,10 @@ Responsive media queries
 .bnr-para {
     margin-right: 5%;
     margin-left: 5%;
+}
+.blog-img-custom{
+    height: auto;
+    width: auto;
 }
 .navbar-default{
     background-color: rgba(64,75,97, 0.9);
