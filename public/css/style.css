@@ -737,7 +737,12 @@ Responsive media queries
 }
 }
 @media (min-width: 20px) and (max-width: 450px) {
-
+#blogCol{
+    width: 95%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: -20px;
+}
 .bnr-para {
     margin-right: 5%;
     margin-left: 5%;

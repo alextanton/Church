@@ -5,6 +5,7 @@ var url = 'mongodb://localhost:27017/blogs';
 var fs = require('fs');
 var https = require('https');
 var request = require('request');
+var fs = require('fs');
 
 var app = express();
 app.disable('x-powered-by');
@@ -51,7 +52,13 @@ MongoClient.connect(url, function(err, db) {
                     var contact = false;
             }
             request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?maxResults=6&timeMin=2017-09-26T14%3A32%3A56.300Z&singleEvents=true&orderBy=startTime&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
-                    res.render('home', {top3: docs, contact: contact, recent: JSON.parse(body).items});
+                    fs.readdir('./public/img/slideshow/', function(err, files){
+                    	var slideshowImages = []
+                    	files.forEach(function(file){
+                    		slideshowImages.push(file);
+                    	})
+            			res.render('home', {top3: docs, contact: contact, recent: JSON.parse(body).items, slideshow: slideshowImages});
+            		})
             })
         })
 });
