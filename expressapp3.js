@@ -1,7 +1,7 @@
 var express = require("express");
 var mongodb = require("mongodb");
 var MongoClient = mongodb.MongoClient
-var url = 'mongodb://localhost:27017/blogs';
+var url = 'mongodb://localhost:27017/church';
 var fs = require('fs');
 var https = require('https');
 var request = require('request');
@@ -24,17 +24,30 @@ var options = {
 	cert: fs.readFileSync('cert.crt')
 }
 
-var insertBlog = function(db, blogob) {
-  var collection = db.collection('documents');
-  collection.insertOne({
-  	img: blogob.img,
-  	title: blogob.title,
-  	author: blogob.author,
-  	post: blogob.post,
-  	posted: new Date()
-  }).then(function(result) {
-  	console.log("Blog Posted")
-  })
+var insertThing = function(db, obj, collection) {
+  var collection = db.collection(collection);
+  if (obj.type == "blog"){
+	collection.insertOne({
+	img: obj.img,
+	title: obj.title,
+	author: obj.author,
+	post: obj.post,
+	posted: new Date()
+    }).then(function(result) {
+		console.log("Blog Posted")
+    })
+  } else if(obj.type == "event"){
+  	collection.insertOne({
+	img: obj.img,
+	title: obj.title,
+	desc: obj.desc,
+	when: obj.when,
+	where: obj.where,
+	posted: new Date()
+    }).then(function(result) {
+		console.log("Blog Posted")
+    })
+  }
 }
 
 MongoClient.connect(url, function(err, db) {
@@ -69,9 +82,15 @@ MongoClient.connect(url, function(err, db) {
 	  });
 	});
 
-	app.post('/admin/add', function(req, res){
-		insertBlog(db, req.body);
-		res.sendStatus(200);
+	app.post('/admin/add/:type', function(req, res){
+		// if(req.params.type == 'blog'){
+		// 	insertBlog(db, req.body);
+		// } else{
+		// 	insertEvent
+		// }
+		// insertBlog(db, req.body);
+		print(req.params);
+		res.render("add", {layout: 'noFoot.handlebars'})
 	})
 
 	app.get('/admin/add', function(req, res){
@@ -79,12 +98,9 @@ MongoClient.connect(url, function(err, db) {
 	});
 
 	app.get('/calendar', function(req,res){
-		if(req.cookie.admin == "tanton"){
-			res.render('calendar', {layout: 'blog.handlebars'})
-		}else{
-			res.sendStatus(403);
-		}
+		res.render('calendar', {layout: 'blog.handlebars'})
 	})
+
 	app.get('/admin/tanton', function(req, res){
 		res.cookie("admin", "tanton");
 		res.redirect("/admin/add");
