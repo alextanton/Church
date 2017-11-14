@@ -1,54 +1,66 @@
 var express = require("express");
+var expressValidator = require("express-validator");
+var flash = require("connect-flash")
 var mongodb = require("mongodb");
-var MongoClient = mongodb.MongoClient
+var MongoClient = mongodb.MongoClient;
 var url = 'mongodb://localhost:27017/church';
 var fs = require('fs');
 var https = require('https');
 var request = require('request');
-var fs = require('fs');
+var session = require('express-session');
+var handlebars = require('express-handlebars').create({defaultLayout:'main'});
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
 
 var app = express();
+
+
 app.disable('x-powered-by');
 app.set('views', __dirname + '/views');
-var handlebars = require('express-handlebars').create({defaultLayout:'main'});
-
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.use(require('body-parser').urlencoded({extended: true}))
+app.use(require('body-parser').urlencoded({extended: false}))
 app.use(require('body-Parser').json());
-
 app.set('port', process.env.PORT || 3000);
+
+app.use(session({
+	secret: 'key',
+	saveUninitialized: true,
+	resave: true
+}));
 
 var options = {
 	key: fs.readFileSync('domain.key'),
 	cert: fs.readFileSync('cert.crt')
 }
 
-var insertThing = function(db, obj, collection) {
-  var collection = db.collection(collection);
-  if (obj.type == "blog"){
-	collection.insertOne({
-	img: obj.img,
-	title: obj.title,
-	author: obj.author,
-	post: obj.post,
-	posted: new Date()
-    }).then(function(result) {
-		console.log("Blog Posted")
-    })
-  } else if(obj.type == "event"){
-  	collection.insertOne({
-	img: obj.img,
-	title: obj.title,
-	desc: obj.desc,
-	when: obj.when,
-	where: obj.where,
-	posted: new Date()
-    }).then(function(result) {
-		console.log("Blog Posted")
-    })
-  }
-}
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(expressValidator({
+	errorFormatter: function(param, msg, value){
+		var namespace = param.split('.');
+		var root = namespace.shift();
+		formParam = root;
+
+		while(namespace.length) {
+			formParam += '[' + namespace.shift() + ']';
+		}
+		return {
+			param: formParam,
+			msg: msg,
+			value: value
+		};
+	}
+}));
+
+app.use(function(req, res, next){
+	res.locals.success_msg = req.flash('success_msg');
+	res.locals.error_msg = req.flash('error_msg');
+	res.locals.error = req.flash('error');
+	next();
+})
 
 MongoClient.connect(url, function(err, db) {
 	if(db == null){
@@ -56,7 +68,7 @@ MongoClient.connect(url, function(err, db) {
 	}
   console.log("Connected successfully to server");
 
-	app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
  app.get('/', function(req, res){
         db.collection('documents').find().sort({$natural:1}).limit(3).toArray(function(err, docs){
             if(req.body.contact){
@@ -82,18 +94,55 @@ MongoClient.connect(url, function(err, db) {
 	  });
 	});
 
+	passport.use(new LocalStrategy(function(username, password, done){
+		User.getUserByUsername(username, function(err, user){
+			if (err) throw error;
+			if(!user){
+				return done(null, false, {message: "unknown user"});
+			}
+			User.comparePassword(password, user.password, function(err, isMatch){
+				if(err) throw err;
+				if (isMatch){
+					return done(null, user);
+				} else {
+					return done(null, false, {message: "unknown password"})
+				}
+			})
+		})
+	}));
+
+	passport.serializeUser(function(user, done) {
+	  done(null, user.id);
+	});
+
+	passport.deserializeUser(function(id, done) {
+	  User.getUserById(id, function(err, user) {
+	    done(err, user);
+	  });
+	});
+
+	app.post('/admin/login', passport.authenticate('local', {successRedirect: '/admin/add', failureRedirect: '/admin/login'}) ,function(req, res){
+		res.redirect("/admin/add");
+	})
+
+	app.get('/admin/login', function(req, res){
+		res.render('login', {layout: 'noFoot.handlebars'})
+	})
+
 	app.post('/admin/add/:type', function(req, res){
-		// if(req.params.type == 'blog'){
-		// 	insertBlog(db, req.body);
-		// } else{
-		// 	insertEvent
-		// }
-		// insertBlog(db, req.body);
-		print(req.params);
+		if(req.params.type == 'blog'){
+			dbOps.insertBlog(db, req.body, "blogs").then(function(result){
+				console.log(result);
+			});
+		} else{
+			insertEvent()
+		}
+		insertBlog(db, req.body);
 		res.render("add", {layout: 'noFoot.handlebars'})
 	})
 
 	app.get('/admin/add', function(req, res){
+		console.log(req.session.isLoggedIn);
 		res.render("add", {layout: 'noFoot.handlebars'})
 	});
 
