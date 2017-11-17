@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var url = 'mongodb://localhost:27017/church/blogs';
+var mammoth = require("mammoth");
 mongoose.connect(url);
 
 var db = mongoose.connection;
@@ -36,4 +37,14 @@ module.exports.getBlogs = function(callback){
 module.exports.insertBlog = function(blogObject, callback){
 	var newBlog = new Blog(blogObject);
 	newBlog.save(callback);
+}
+
+module.exports.uploadBlogAsDocx = function(buffer, callback){
+	mammoth.convertToHtml({buffer: buffer})
+    .then(function(result){
+        var html = result.value;
+        var messages = result.messages; 
+        callback(html);
+    })
+    .done();
 }

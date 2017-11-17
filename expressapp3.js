@@ -25,6 +25,18 @@ app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(require('body-parser').urlencoded({extended: false}))
 app.use(require('body-Parser').json());
+
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.html');
+    }
+});
+var upload = multer({ dest: "./public/uploads/" });
+
 app.set('port', process.env.PORT || 3000);
 
 app.use(session({
@@ -145,6 +157,14 @@ app.use(express.static(__dirname + '/public'));
 			insertEvent()
 		}
 		res.render("add", {layout: 'noFoot.handlebars'})
+	})
+
+	app.post('/admin/blog/upload', upload.single('file'), function(req, res, next){
+		console.log(req.file.path);
+		Blog.uploadBlogAsDocx(req.file.buffer, function(html){
+			console.log(html)
+		});
+		res.redirect("/admin/add");
 	})
 
 	app.get('/blogs', function(req, res){
