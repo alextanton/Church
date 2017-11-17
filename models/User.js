@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
-mongoose.connect('mongodb://localhost/passport');
+mongoose.connect('mongodb://localhost/church/users');
 
 var db = mongoose.connection;
 var schema = mongoose.Schema;
@@ -18,6 +18,7 @@ var UserSchema = new schema({
 var User = module.exports = mongoose.model('User', UserSchema);
 
 module.exports.getUserByUsername = function(username, callback){
+	console.log(username);
 	var query = {username: username};
 	User.findOne(query, callback);
 }
@@ -29,6 +30,6 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
 	})
 }
 
-module.exports.getUseId = function(id, callback){
-	User.findByID(id, callback);
+module.exports.getUserById = function(id, callback){
+	User.findById(id, callback);
 }

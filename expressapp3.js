@@ -11,6 +11,9 @@ var session = require('express-session');
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var User = require('./models/user');
+var Blog = require('./models/blog');
+var Event = require('./models/event');
 
 
 var app = express();
@@ -55,6 +58,8 @@ app.use(expressValidator({
 	}
 }));
 
+app.use(flash());
+
 app.use(function(req, res, next){
 	res.locals.success_msg = req.flash('success_msg');
 	res.locals.error_msg = req.flash('error_msg');
@@ -88,15 +93,13 @@ app.use(express.static(__dirname + '/public'));
         })
 });
 
-	app.get('/blogs', function(req, res){
-	  var posts = db.collection('documents').find().toArray(function(err, documents){
-	 	res.render('blogs', {layout: 'blog.handlebars', test: documents});
-	  });
-	});
-
-	passport.use(new LocalStrategy(function(username, password, done){
+	passport.use("poop", new LocalStrategy({
+  		usernameField: 'username',
+  		passwordField: 'password'
+			},
+		function(username, password, done){
 		User.getUserByUsername(username, function(err, user){
-			if (err) throw error;
+			if (err) return done(err);
 			if(!user){
 				return done(null, false, {message: "unknown user"});
 			}
@@ -121,7 +124,7 @@ app.use(express.static(__dirname + '/public'));
 	  });
 	});
 
-	app.post('/admin/login', passport.authenticate('local', {successRedirect: '/admin/add', failureRedirect: '/admin/login'}) ,function(req, res){
+	app.post('/admin/login', passport.authenticate('poop', {successRedirect: '/admin/add', failureRedirect: '/admin/login'}) ,function(req, res){
 		res.redirect("/admin/add");
 	})
 
@@ -131,20 +134,42 @@ app.use(express.static(__dirname + '/public'));
 
 	app.post('/admin/add/:type', function(req, res){
 		if(req.params.type == 'blog'){
-			dbOps.insertBlog(db, req.body, "blogs").then(function(result){
-				console.log(result);
+			Blog.insertBlog(req.body, function(err){
+				if(err){
+					res.statusCode = 500;
+				}else{
+					console.log("BLOG INSERTED");
+				}
 			});
 		} else{
 			insertEvent()
 		}
-		insertBlog(db, req.body);
 		res.render("add", {layout: 'noFoot.handlebars'})
 	})
 
-	app.get('/admin/add', function(req, res){
-		console.log(req.session.isLoggedIn);
+	app.get('/blogs', function(req, res){
+		Blog.getBlogs(function(err, blogs){
+			if(err){
+				console.log(err);
+			} else {
+				console.log("GET /BLOGS: " + blogs);
+				res.render('blogs', {layout: 'blog.handlebars', test: blogs});
+			}
+		});
+	});
+
+	app.get('/admin/add', ensureAuthenticated, function(req, res){
 		res.render("add", {layout: 'noFoot.handlebars'})
 	});
+
+	function ensureAuthenticated(req, res, next){
+		if(req.isAuthenticated()){
+			return next();
+		} else {
+			//req.flash('error_msg','You are not logged in');
+			res.redirect('/admin/login');
+		}
+	}
 
 	app.get('/calendar', function(req,res){
 		res.render('calendar', {layout: 'blog.handlebars'})
@@ -157,12 +182,14 @@ app.use(express.static(__dirname + '/public'));
 	})
 
 	app.get('/blogs/:id', function(req, res){
-		var id = new mongodb.ObjectID(req.params.id);
-		var post = db.collection('documents').find({_id:id}).toArray(function(err, docs){
-			p = docs[0].post.split("\n");
-			docs[0].post = p;
-			res.render('singleBlog', {layout: 'blog.handlebars', blog: docs[0]})
-		})
+		Blog.getBlogById(req.params.id, function(err, blog){
+			if(err){
+				res.statusCode = 500;
+			} else {
+				blog.post = blog.post.split("\n");
+				res.render('singleBlog', {layout: 'blog.handlebars', blog: blog})
+			}
+		});
 	})
 
 	app.post('/contact', function(req, res){

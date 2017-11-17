@@ -17,7 +17,7 @@
             </p>
             <p><span class="glyphicon glyphicon-time"></span>{{posted}}</p>
             <hr>
-            <img class="img-responsive" src={{img}} alt="">
+            <img class="img-responsive" src="{{image}}">
             <hr>
             <p style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{post}}</p>
             <a class="btn btn-primary" href="/blogs/{{_id}}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
@@ -45,11 +45,6 @@
 </div>
 </section>
 
-<script type="text/javascript">
-    $('.next').click(function(event){
-        event.preventDefault();
-    });
-</script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.easing.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -57,3 +52,8 @@
 <script src="js/jquery.bxslider.min.js"></script>
 <script src="js/custom.js"></script>
 <script src="contactform/contactform.js"></script>
+<script type="text/javascript">
+    $('.next').click(function(event){
+        event.preventDefault();
+    });
+</script>
