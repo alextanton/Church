@@ -1,0 +1,34 @@
+<!-- Page Content -->
+<br>
+<br>
+<br>
+<section id="works" style="margin-top: -20px;" class="section-padding wow fadeInUp delay-05s">
+<div class="container">
+    {{#each beliefs}}
+    <div class="row">
+        <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-3">{{title}}</h1>
+            <p class="lead">{{belief}} {{#each verses}}<a class="verse" href="https://www.biblegateway.com/passage/?search={{this}}&version=NIV">{{this}}</a>, {{/each}}</p>
+        </div>
+        </div>
+    </div>
+    <hr>
+    {{/each}}
+</div>
+</section>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.easing.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/wow.js"></script>
+<script src="js/custom.js"></script>
+
+<style>
+    .header{
+        min-height: 350px;
+    }
+    .bg-color{
+        min-height: 350px;
+    }
+</style>

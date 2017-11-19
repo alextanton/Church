@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+<link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 <br>
 <br>
 <section class="section-padding wow fadeInUp delay-05s">
@@ -10,17 +11,15 @@
   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addEvent" aria-expanded="false" aria-controls="collapseExample">
     Add Event
   </button>
-  <form action="/admin/blog/upload" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-      <label for="blogFile">Blog DOCX File Upload</label>
-      <input name="file" type="file" class="form-control-file" id="blogFile" aria-describedby="fileHelp">
-    </div>
-    <input type="submit" class="btn btn-primary"></input>
-  </form>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#addBelief" aria-expanded="false" aria-controls="collapseExample">
+    Add Belief
+  </button>
+  {{!-- <form action="/admin/blog/upload" method="post" enctype="multipart/form-data">
+  </form> --}}
 </p>
 <div class="collapse" id="addBlog">
   <div class="card card-block">
-    <form id="addBlogForm" action="/admin/add/blog" method="post">
+    <form id="addBlogForm" action="/admin/add/blog" method="post" enctype="multipart/form-data">
 	  <div class="form-group">
 	    <label for="title">Title</label>
 	    <input name="title" type="text" class="form-control" id="title" placeholder="Title">
@@ -34,23 +33,26 @@
 	    <input name="image" type="text" class="form-control" id="image" placeholder="Image URL">
 	  </div>
 	  <div class="form-group">
-	    <label for="post">Blog Post</label>
-	    <textarea name="post" class="form-control" id="post" rows="5"></textarea>
-	  </div>
+      <label for="blogFile">Blog DOCX File Upload</label>
+      <input name="file" type="file" class="form-control-file" id="blogFile" aria-describedby="fileHelp">
+    </div>
 	  <input type="submit" class="btn btn-primary"></input>
 	</form>
   </div>
 </div>
 <div class="collapse" id="addEvent">
   <div class="card card-block">
-    <form id="addEventForm" action="/admin/add/blog" method="post">
+    <form id="addEventForm" action="/admin/add/event" method="post">
       <div class="form-group">
         <label for="etitle">Title</label>
         <input name="title" type="etitle" class="form-control" id="etitle" placeholder="Title">
       </div>
       <div class="form-group">
-        <label for="when">When</label>
-        <input class="form-control" id="when" name="date" placeholder="MM/DD/YYY" type="text"/>
+        <label for="when">Date</label>
+        <div class="input-group date form_datetime col-md-5" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+          <input name="date" class="form-control" type="text" value="">
+          <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+        </div>
       </div>
       <div class="form-group">
         <label for="eimg">Image Link</label>
@@ -68,6 +70,25 @@
     </form>
   </div>
 </div>
+<div class="collapse" id="addBelief">
+  <div class="card card-block">
+    <form id="addBeliefForm" action="/admin/add/belief" method="post">
+	  <div class="form-group">
+	    <label for="title">Title</label>
+	    <input name="title" type="text" class="form-control" id="btitle" placeholder="Title">
+	  </div>
+	  <div class="form-group">
+	    <label for="author">Belief</label>
+	    <input name="belief" type="text" class="form-control" id="belief" placeholder="Belief">
+	  </div>
+	  <div class="form-group">
+	    <label for="img">Verses</label>
+	    <input name="verses" type="text" class="form-control" id="image" placeholder="Verses(sperate by ',')">
+	  </div>
+	  <input type="submit" class="btn btn-primary"></input>
+	</form>
+  </div>
+</div>
 </section>
 
 <style type="text/css">
@@ -79,6 +100,7 @@
 <script src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+<script src="/js/bootstrap-datetimepicker.min.js"></script>
 <script src="/js/jquery.easing.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/wow.js"></script>
@@ -86,6 +108,16 @@
 <script src="/js/custom.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
+        $('.form_datetime').datetimepicker({
+        weekStart: 0,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        });
+        $('.form_datetime').datetimepicker('setStartDate', new Date());
         $('#when')
         .datepicker({
             format: 'mm/dd/yyyy'

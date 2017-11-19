@@ -22,7 +22,7 @@
         </div>
       </div>
     </section>
-    <section id="works" class="section-padding wow fadeInUp delay-05s">
+    <section id="portfolio" class="section-padding wow fadeInUp delay-05s">
       <div class="container">
         <div class="row">
           <div class="col-md-12 text-center">
@@ -30,22 +30,25 @@
             <!--<p class="sub-title pad-bt15">These are the events you just missed<br>Check the calendar to make you don't miss anymore</p>!-->
             <hr class="bottom-line">
           </div>
-          {{recent.events}}
-          {{#each recent}}
-          <div class="col-md-4 col-sm-6 col-xs-12 portfolio-item padding-right-zero mr-btn-15">
-            <figure>
-              <img src="http://www.churchmanagementguide.com/wp-content/uploads/2016/12/Church-Services.jpg" class="img-responsive">
-              <figcaption>
-                  <h2>{{summary}}</h2>
-                  <p>{{recent.description}}</p>
-              </figcaption>
-            </figure>
           </div>
-          {{/each}}
-          <a href="/calendar" class="read-more">See full calendar →</a>
+        <div class="row">
+            {{#each recent}}
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#eventModal{{@index}}" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="{{image}}" class="img-responsive">
+                    </a>
+                </div>
+            {{/each}}
         </div>
-      </div>
+        <a href="/calendar" class="read-more">See full calendar →</a>
+        </div>
     </section>
+    <div id="beliefs"></div>
     <section id="portfolio" class="section-padding wow fadeInUp delay-05s">
       <div class="container">
         <div class="row">
@@ -58,28 +61,28 @@
             <div class="service-item">
               <h3><span>b</span>ible</h3>
               <p>We believe the Bible is the inspired word of God, written by man. The Bible is meant to be obeyed, and is useful and relevant to our lives today.</p>
-              <a href="">learn more...</a>
+              <a href="/beliefs">learn more...</a>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="service-item">
               <h3><span>S</span>alvation</h3>
               <p>We are saved only by the grace of God, not by works. Through faith in Jesus, repentance, and baptism into Christ, we accept the free gift of forgiveness and salvation that comes through Christ, our only mediator to God.</p>
-              <a href="">learn more...</a>
+              <a href="/beliefs">learn more...</a>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="service-item">
               <h3><span>c</span>hurch</h3>
               <p>We believe that Jesus is the head of the church. The members together form one unified body committed to loving God, loving each other, and obeying His commands. </p>
-              <a href="">learn more...</a>
+              <a href="/beliefs">learn more...</a>
             </div>
           </div>
           <div class="col-md-3 col-sm-6 col-xs-12">
             <div class="service-item">
               <h3><span>G</span>od</h3>
               <p>God created the universe and the world we live in. He is Lord of earth and heaven, and exists as the triune Godhead-- the Father, the Son, and the Holy Spirit. God is Love, and his Sovereignty extends an unwarranted grace to mankind.</p>
-              <a href="">Learn more...</a>
+              <a href="/beliefs">learn more...</a>
             </div>
           </div>
         </div>
@@ -171,7 +174,7 @@
               <div class="blog-sec">
                 <div class="blog-img">
                   <a href="/blogs/{{_id}}">
-                    <img src={{img}}  class="img-responsive blog-img-custom">
+                    <img src={{image}}  class="img-responsive blog-img-custom">
                   </a>
                 </div>
                 <div class="blog-info">
@@ -408,6 +411,42 @@
             </div>
         </div>
     </div>
+    <!--
+        EVENT CRAPPPPP
+    !-->
+    {{#each recent}}
+        <div class="portfolio-modal modal fade" id="eventModal{{@index}}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="modal-body">
+                                <h2>{{title}}</h2>
+                                <hr class="star-primary">
+                                <img src="{{image}}" class="img-responsive img-centered" alt="">
+                                <p>{{desc}}</p>
+                                <ul class="list-inline item-details">
+                                    <li>Where:<br>
+                                        <strong>{{where}}</strong>
+                                        <br>
+                                        When:<br>
+                                        <strong>{{date}}</strong>
+                                    </li>
+                                </ul>
+                                <button id="btnSubmit" type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/each}}
 
 <script src="js/blueimp-gallery.min.js"></script>
 <script>

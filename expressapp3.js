@@ -14,6 +14,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('./models/user');
 var Blog = require('./models/blog');
 var Event = require('./models/event');
+var Belief = require('./models/belief');
 
 
 var app = express();
@@ -87,22 +88,17 @@ MongoClient.connect(url, function(err, db) {
 
 app.use(express.static(__dirname + '/public'));
  app.get('/', function(req, res){
-        db.collection('documents').find().sort({$natural:1}).limit(3).toArray(function(err, docs){
-            if(req.body.contact){
-                    var contact = req.body.contact
-            } else {
-                    var contact = false;
-            }
-            request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?maxResults=6&timeMin=2017-09-26T14%3A32%3A56.300Z&singleEvents=true&orderBy=startTime&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
-                    fs.readdir('./public/img/slideshow/', function(err, files){
-                    	var slideshowImages = []
-                    	files.forEach(function(file){
-                    		slideshowImages.push(file);
-                    	})
-            			res.render('home', {top3: docs, contact: contact, recent: JSON.parse(body).items, slideshow: slideshowImages});
-            		})
-            })
-        })
+	 Blog.getTop3Blogs(function(err, blogs){
+		Event.getUpComingEvents(function(err, events){
+			fs.readdir('./public/img/slideshow/', function(err, files){
+				var slideshowImages = []
+				files.forEach(function(file){
+					slideshowImages.push(file);
+				})
+				res.render('home', {top3: blogs, recent: events, slideshow: slideshowImages});
+			})
+		})
+	 });
 });
 
 	passport.use("poop", new LocalStrategy({
@@ -144,25 +140,31 @@ app.use(express.static(__dirname + '/public'));
 		res.render('login', {layout: 'noFoot.handlebars'})
 	})
 
-	app.post('/admin/add/:type', function(req, res){
-		if(req.params.type == 'blog'){
-			Blog.insertBlog(req.body, function(err){
-				if(err){
-					res.statusCode = 500;
-				}else{
-					console.log("BLOG INSERTED");
-				}
-			});
-		} else{
-			insertEvent()
-		}
-		res.render("add", {layout: 'noFoot.handlebars'})
+	app.post('/admin/add/blog', upload.single('file'),function(req, res, next){
+		Blog.uploadBlogWithDocx(req.file.path, req.body, function(isPosted){
+			if(isPosted){
+				console.log("BLOG INSERTED");
+				res.render("add", {layout: 'noFoot.handlebars'})
+			}else{
+				res.statusCode = 500;
+			}
+		}); 
+	})
+
+	app.post('/admin/add/event', function(req, res, next){
+		Event.insertEvent(req.body, function(eventPosted){
+			if(eventPosted){
+				res.render("add", {layout: 'noFoot.handlebars'})
+			}else {
+				res.sendStatus = 500;
+			}
+		});
 	})
 
 	app.post('/admin/blog/upload', upload.single('file'), function(req, res, next){
 		console.log(req.file.path);
-		Blog.uploadBlogAsDocx(req.file.buffer, function(html){
-			console.log(html)
+		Blog.uploadBlogAsDocx(req.file.path, function(html){
+			
 		});
 		res.redirect("/admin/add");
 	})
@@ -172,7 +174,6 @@ app.use(express.static(__dirname + '/public'));
 			if(err){
 				console.log(err);
 			} else {
-				console.log("GET /BLOGS: " + blogs);
 				res.render('blogs', {layout: 'blog.handlebars', test: blogs});
 			}
 		});
@@ -195,18 +196,11 @@ app.use(express.static(__dirname + '/public'));
 		res.render('calendar', {layout: 'blog.handlebars'})
 	})
 
-	app.get('/admin/tanton', function(req, res){
-		res.cookie("admin", "tanton");
-		res.redirect("/admin/add");
-
-	})
-
 	app.get('/blogs/:id', function(req, res){
 		Blog.getBlogById(req.params.id, function(err, blog){
 			if(err){
 				res.statusCode = 500;
 			} else {
-				blog.post = blog.post.split("\n");
 				res.render('singleBlog', {layout: 'blog.handlebars', blog: blog})
 			}
 		});
@@ -220,12 +214,40 @@ app.use(express.static(__dirname + '/public'));
 		wr = "---------------------------\n" + name + email + subject + message + "---------------------------"
 		fs.writeFile("test.txt", wr, function(err){
 			console.log(err);
+			})
+			console.log("File written!")
+			res.redirect('/#foot?contact=true');
 		})
-		console.log("File written!")
-		res.redirect('/#foot?contact=true');
+	});
+
+	app.post("/admin/add/belief", function(req, res){
+		req.body.verses = req.body.verses.split(',');
+		Belief.insertBelief(req.body, function(err){
+			if(!err){console.log("ERROR! BELIEF NOT POSTED!")}
+			else{
+				res.redirect("/admin/add");
+			}
+		})
 	})
-});
+
+	app.get("/beliefs", function(req, res){
+		Belief.getAllBeliefs(function(err, beliefs){
+			res.render('beliefs', {layout: 'belief.handlebars', beliefs: beliefs});
+		});
+	})
 
 https.createServer(options, app).listen(3000, function() {
     console.log('Server listening on port %d in %s mode', this.address().port, app.settings.env);
 });
+
+
+// Might want this later for getting stuff out of google calendar...
+// request("https://www.googleapis.com/calendar/v3/calendars/charlestonchurchofchrist.org_8oqnmucsna6a5fi3a64vd19hmg%40group.calendar.google.com/events?maxResults=6&timeMin=2017-09-26T14%3A32%3A56.300Z&singleEvents=true&orderBy=startTime&key=AIzaSyDq6QtcXD8sK5Hoa_bSsuGp1xMYvGJ6vu0", function(error, response, body){
+// 	fs.readdir('./public/img/slideshow/', function(err, files){
+// 		var slideshowImages = []
+// 		files.forEach(function(file){
+// 			slideshowImages.push(file);
+// 		})
+// 		res.render('home', {top3: docs, contact: contact, recent: JSON.parse(body).items, slideshow: slideshowImages});
+// 	})
+// })

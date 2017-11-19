@@ -9,16 +9,19 @@ var EventSchema = new schema({
 	title: {
 		type: String
 	},
-	author: {
+	where: {
 		type: String
 	},
-	post: {
+	date: {
 		type: String
 	},
-	datePosted: {
-		type: String
+	dateObject: {
+		type: Date
 	},
 	image: {
+		type: String
+	},
+	desc: {
 		type: String
 	}
 })
@@ -29,19 +32,17 @@ module.exports.getEventById = function(id, callback){
 	Event.findById(id, callback);
 }
 
-module.exports.getEvents = function(callback){
-	Event.find({}, function(events, err){
-		if(err){throw err;}
-		if(events){
-			callback(events);
-		}
-	})
+module.exports.getUpComingEvents = function(callback){
+	var today = new Date().getTime();
+	Event.find().sort({'dateObject': 'desc'}).limit(6).exec(callback)
 }
 
 module.exports.insertEvent = function(eventObject, callback){
+	eventObject.dateObject = new Date();
 	var newEvent = new Event(eventObject);
-	Event.save(function(err){
-		if(err){throw err;}
+	newEvent.save(function(err){
+		if(err){callback(false);}
 		console.log("EVENT POSTED");
+		callback(true)
 	})
 }
