@@ -11,10 +11,10 @@ var session = require('express-session');
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('./models/user');
-var Blog = require('./models/blog');
-var Event = require('./models/event');
-var Belief = require('./models/belief');
+var User = require('./models/User');
+var Blog = require('./models/Blog');
+var Event = require('./models/Event');
+var Belief = require('./models/Belief');
 
 
 var app = express();
@@ -25,7 +25,7 @@ app.set('views', __dirname + '/views');
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(require('body-parser').urlencoded({extended: false}))
-app.use(require('body-Parser').json());
+app.use(require('body-parser').json());
 
 var multer = require('multer');
 var storage = multer.diskStorage({
