@@ -6,6 +6,7 @@ var MongoClient = mongodb.MongoClient;
 var url = 'mongodb://localhost:27017/church';
 var fs = require('fs');
 var https = require('https');
+var helmet = require('helmet');
 var request = require('request');
 var session = require('express-session');
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
@@ -24,6 +25,7 @@ app.disable('x-powered-by');
 app.set('views', __dirname + '/views');
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+app.use(helmet());
 app.use(require('body-parser').urlencoded({extended: false}))
 app.use(require('body-parser').json());
 
@@ -80,12 +82,6 @@ app.use(function(req, res, next){
 	next();
 })
 
-MongoClient.connect(url, function(err, db) {
-	if(db == null){
-		console.log(err);
-	}
-  console.log("Connected successfully to server");
-
 app.use(express.static(__dirname + '/public'));
  app.get('/', function(req, res){
 	 Blog.getTop3Blogs(function(err, blogs){
@@ -140,10 +136,9 @@ app.use(express.static(__dirname + '/public'));
 		res.render('login', {layout: 'noFoot.handlebars'})
 	})
 
-	app.post('/admin/add/blog', upload.single('file'),function(req, res, next){
+	app.post('/admin/add/blog', ensureAuthenticated, upload.single('file'),function(req, res, next){
 		Blog.uploadBlogWithDocx(req.file.path, req.body, function(isPosted){
 			if(isPosted){
-				console.log("BLOG INSERTED");
 				res.render("add", {layout: 'noFoot.handlebars'})
 			}else{
 				res.statusCode = 500;
@@ -151,7 +146,7 @@ app.use(express.static(__dirname + '/public'));
 		}); 
 	})
 
-	app.post('/admin/add/event', function(req, res, next){
+	app.post('/admin/add/event', ensureAuthenticated,function(req, res, next){
 		Event.insertEvent(req.body, function(eventPosted){
 			if(eventPosted){
 				res.render("add", {layout: 'noFoot.handlebars'})
@@ -161,10 +156,8 @@ app.use(express.static(__dirname + '/public'));
 		});
 	})
 
-	app.post('/admin/blog/upload', upload.single('file'), function(req, res, next){
-		console.log(req.file.path);
-		Blog.uploadBlogAsDocx(req.file.path, function(html){
-			
+	app.post('/admin/blog/upload', ensureAuthenticated, upload.single('file'), function(req, res, next){
+			Blog.uploadBlogAsDocx(req.file.path, function(html){	
 		});
 		res.redirect("/admin/add");
 	})
@@ -172,7 +165,7 @@ app.use(express.static(__dirname + '/public'));
 	app.get('/blogs', function(req, res){
 		Blog.getBlogs(function(err, blogs){
 			if(err){
-				console.log(err);
+				//
 			} else {
 				res.render('blogs', {layout: 'blog.handlebars', test: blogs});
 			}
@@ -213,17 +206,15 @@ app.use(express.static(__dirname + '/public'));
 		message = "Message: " + req.body.message + "\n";
 		wr = "---------------------------\n" + name + email + subject + message + "---------------------------"
 		fs.writeFile("test.txt", wr, function(err){
-			console.log(err);
+			//
 			})
-			console.log("File written!")
 			res.redirect('/#foot?contact=true');
 		})
-	});
 
-	app.post("/admin/add/belief", function(req, res){
+	app.post("/admin/add/belief", ensureAuthenticated,function(req, res){
 		req.body.verses = req.body.verses.split(',');
 		Belief.insertBelief(req.body, function(err){
-			if(!err){console.log("ERROR! BELIEF NOT POSTED!")}
+			if(!err){/**/}
 			else{
 				res.redirect("/admin/add");
 			}
@@ -234,6 +225,10 @@ app.use(express.static(__dirname + '/public'));
 		Belief.getAllBeliefs(function(err, beliefs){
 			res.render('beliefs', {layout: 'belief.handlebars', beliefs: beliefs});
 		});
+	})
+
+	app.get("/family", function(req, res){
+		res.render('familygroups', {layout: 'blank.handlebars'})
 	})
 
 https.createServer(options, app).listen(3000, function() {
