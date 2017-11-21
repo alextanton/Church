@@ -2,8 +2,8 @@ var bcrypt = require('bcryptjs');
 var User = require("../models/User")
 
 var newUser = new User({
-	username: "test",
-	password: "test"
+	username: "*********",
+	password: "*********"
 });
 
 bcrypt.genSalt(10, function(err, salt) {

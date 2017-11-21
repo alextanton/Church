@@ -41,7 +41,7 @@ var upload = multer({ dest: "./public/uploads/" });
 app.set('port', process.env.PORT || 3000);
 
 app.use(session({
-	secret: 'key',
+	secret: '************',
 	saveUninitialized: true,
 	resave: true
 }));
