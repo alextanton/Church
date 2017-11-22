@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var config = require('./config');
+var config = require('../config');
 var url = config.db + '/blogs';
 var mammoth = require("mammoth");
 mongoose.connect(url);

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
-var config = require('./config');
+var config = require('../config');
 url = config.db + '/users';
 mongoose.connect(url);
 

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var config = require('./config');
+var config = require('../config');
 var url = config.db + '/events';
 mongoose.connect(url);
 
