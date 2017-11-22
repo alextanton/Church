@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var url = 'mongodb://localhost:27017/church/blogs';
+var config = require('./config');
+var url = config.db + '/blogs';
 var mammoth = require("mammoth");
 mongoose.connect(url);
 

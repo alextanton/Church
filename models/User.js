@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
-
-mongoose.connect('mongodb://localhost/church/users');
+var config = require('./config');
+url = config.db + '/users';
+mongoose.connect(url);
 
 var db = mongoose.connection;
 var schema = mongoose.Schema;

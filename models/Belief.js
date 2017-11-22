@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var url = 'mongodb://localhost:27017/church/beliefs';
+var config = require('./config');
+var url = config.db + '/beliefs';
 mongoose.connect(url);
 
 var db = mongoose.connection;

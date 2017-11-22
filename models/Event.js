@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var url = 'mongodb://localhost:27017/church/events';
+var config = require('./config');
+var url = config.db + '/events';
 mongoose.connect(url);
 
 var db = mongoose.connection;

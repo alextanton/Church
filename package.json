@@ -2,8 +2,8 @@
   "name": "expressapp",
   "version": "1.0.0",
   "private": true,
-  "description": "Node learnin'",
-  "main": "expresstut.js",
+  "description": "Church Website",
+  "main": "expressapp3.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
