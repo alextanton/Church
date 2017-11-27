@@ -81,7 +81,7 @@ app.use(function(req, res, next){
 
 app.use(express.static(__dirname + '/public'));
  app.get('/', function(req, res){
-	 Blog.getTop3Blogs(function(err, blogs){
+	Blog.getTop3Blogs(function(err, blogs){
 		Event.getUpComingEvents(function(err, events){
 			fs.readdir('./public/img/slideshow/', function(err, files){
 				var slideshowImages = []
@@ -91,7 +91,7 @@ app.use(express.static(__dirname + '/public'));
 				res.render('home', {top3: blogs, recent: events, slideshow: slideshowImages});
 			})
 		})
-	 });
+	});
 });
 
 	passport.use("poop", new LocalStrategy({
@@ -187,13 +187,15 @@ app.use(express.static(__dirname + '/public'));
 	})
 
 	app.get('/blogs/:id', function(req, res){
-		Blog.getBlogById(req.params.id, function(err, blog){
-			if(err){
-				res.statusCode = 500;
-			} else {
-				res.render('singleBlog', {layout: 'blog.handlebars', blog: blog})
-			}
-		});
+		Blog.updateViewCount(req.params.id, function(err){
+			Blog.getBlogById(req.params.id, function(err, blog){
+				if(err){
+					res.statusCode = 500;
+				} else {
+					res.render('singleBlog', {layout: 'blog.handlebars', blog: blog})
+				}
+			});
+		})
 	})
 
 	app.post('/contact', function(req, res){

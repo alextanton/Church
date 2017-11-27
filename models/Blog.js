@@ -22,10 +22,17 @@ var BlogSchema = new schema({
 	},
 	image: {
 		type: String
+	},
+	views: {
+		type: Number
 	}
 })
 
 var Blog = module.exports = mongoose.model('Blog', BlogSchema);
+
+module.exports.updateViewCount = function(id, callback){
+	Blog.findOneAndUpdate({_id: id}, {$inc: {'views' : 1}}, callback);
+}
 
 module.exports.getBlogById = function(id, callback){
 	Blog.findById(id, callback);
