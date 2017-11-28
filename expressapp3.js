@@ -2,7 +2,8 @@ var express = require("express");
 var expressValidator = require("express-validator");
 var flash = require("connect-flash")
 var fs = require('fs');
-var https = require('https');
+//var https = require('https');
+var http = require('http');
 var helmet = require('helmet');
 var request = require('request');
 var session = require('express-session');
@@ -46,8 +47,8 @@ app.use(session({
 }));
 
 var options = {
-	key: fs.readFileSync('domain.key'),
-	cert: fs.readFileSync('cert.crt')
+	//key: fs.readFileSync('domain.key'),
+	//cert: fs.readFileSync('cert.crt')
 }
 
 app.use(passport.initialize());
@@ -230,9 +231,11 @@ app.use(express.static(__dirname + '/public'));
 		res.render('familygroups', {layout: 'blank.handlebars'})
 	})
 
-https.createServer(options, app).listen(3000, function() {
-    console.log('Server listening on port %d in %s mode', this.address().port, app.settings.env);
-});
+// https.createServer(app).listen(3000, function() {
+//     console.log('Server listening on port %d in %s mode', this.address().port, app.settings.env);
+// });
+
+http.createServer(app).listen(3000);
 
 
 // Might want this later for getting stuff out of google calendar...
